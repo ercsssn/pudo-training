@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\Interfaces\OrderRepositoryInterface;
-use App\Models\Order;
+use App\Order;
 
 class OrderRepository implements OrderRepositoryInterface 
 {
