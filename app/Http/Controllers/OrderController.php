@@ -10,7 +10,7 @@ use Illuminate\Http\Response;
 
 class OrderController extends Controller 
 {
-    private OrderRepositoryInterface $orderRepository;
+    //private OrderRepositoryInterface $orderRepository;
 
     public function __construct(OrderRepositoryInterface $orderRepository) 
     {
