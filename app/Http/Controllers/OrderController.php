@@ -2,84 +2,70 @@
 
 namespace App\Http\Controllers;
 
-use App\Order;
+//use App\Order;
+use App\Interfaces\OrderRepositoryInterface;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
-class OrderController extends Controller
+class OrderController extends Controller 
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    private OrderRepositoryInterface $orderRepository;
+
+    public function __construct(OrderRepositoryInterface $orderRepository) 
     {
-        //
+        $this->orderRepository = $orderRepository;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function index(): JsonResponse 
     {
-        //
+        return response()->json([
+            'data' => $this->orderRepository->getAllOrders()
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse 
     {
-        //
+        $orderDetails = $request->only([
+            'client',
+            'details'
+        ]);
+
+        return response()->json(
+            [
+                'data' => $this->orderRepository->createOrder($orderDetails)
+            ],
+            Response::HTTP_CREATED
+        );
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Order  $order
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Order $order)
+    public function show(Request $request): JsonResponse 
     {
-        //
+        $orderId = $request->route('id');
+
+        return response()->json([
+            'data' => $this->orderRepository->getOrderById($orderId)
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Order  $order
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Order $order)
+    public function update(Request $request): JsonResponse 
     {
-        //
+        $orderId = $request->route('id');
+        $orderDetails = $request->only([
+            'client',
+            'details'
+        ]);
+
+        return response()->json([
+            'data' => $this->orderRepository->updateOrder($orderId, $orderDetails)
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Order  $order
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Order $order)
+    public function destroy(Request $request): JsonResponse 
     {
-        //
-    }
+        $orderId = $request->route('id');
+        $this->orderRepository->deleteOrder($orderId);
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Order  $order
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Order $order)
-    {
-        //
+        return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 }
