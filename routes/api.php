@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\OrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +17,10 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+Route::get('orders', 'OrderController@index');
+Route::get('orders/{id}', 'OrderController@show');
+Route::post('orders', 'OrderController@store');
+Route::put('orders/{id}', 'OrderController@update');
+Route::delete('orders/{id}', 'OrderController@delete');
